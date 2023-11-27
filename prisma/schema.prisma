@@ -28,10 +28,20 @@ model AdvPropDetails {
   published   Boolean  @default(false)
   title       String
   description String
+  bedrooms    Int?
+  bathrooms   Int?
+  builtUp     Decimal?
+  landArea    Decimal?
+  tenure      Tenure
   User        User?    @relation(fields: [userId], references: [id])
   userId      Int?
 
   @@index([userId])
+}
+
+enum Tenure {
+  FREEHOLD
+  LEASEHOLD
 }
 
 enum Role {
