@@ -12,31 +12,92 @@ datasource db {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  email          String           @unique
-  name           String?
-  role           Role             @default(USER)
-  AdvPropDetails AdvPropDetails[]
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  email       String        @unique
+  name        String?
+  role        Role          @default(USER)
+  AdvPropSale AdvPropSale[]
+  AdvPropRent AdvPropRent[]
 }
 
-model AdvPropDetails {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  published   Boolean  @default(false)
-  title       String
+model AdvPropSale {
+  id          Int                 @id @default(autoincrement())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  published   Boolean             @default(false)
+  title       String              @db.Char(70)
   description String
   bedrooms    Int?
   bathrooms   Int?
   builtUp     Decimal?
   landArea    Decimal?
   tenure      Tenure
-  User        User?    @relation(fields: [userId], references: [id])
+  price       Int
+  propType    PropType
+  imageUrls   AdvImgUrlPropSale[]
+  state       String
+  area        String
+  User        User?               @relation(fields: [userId], references: [id])
   userId      Int?
 
   @@index([userId])
+}
+
+model AdvPropRent {
+  id          Int                 @id @default(autoincrement())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  published   Boolean             @default(false)
+  title       String              @db.Char(70)
+  description String
+  bedrooms    Int?
+  bathrooms   Int?
+  builtUp     Decimal?
+  landArea    Decimal?
+  price       Int
+  furnishing  Furnishing
+  propType    PropType
+  imageUrls   AdvImgUrlPropRent[]
+  state       String
+  area        String
+  User        User?               @relation(fields: [userId], references: [id])
+  userId      Int?
+
+  @@index([userId])
+}
+
+model AdvImgUrlPropSale {
+  id            Int          @id @default(autoincrement())
+  url           String
+  AdvPropSale   AdvPropSale? @relation(fields: [advPropSaleId], references: [id])
+  advPropSaleId Int?
+
+  @@index([advPropSaleId])
+}
+
+model AdvImgUrlPropRent {
+  id            Int          @id @default(autoincrement())
+  url           String
+  AdvPropRent   AdvPropRent? @relation(fields: [advPropRentId], references: [id])
+  advPropRentId Int?
+
+  @@index([advPropRentId])
+}
+
+enum Furnishing {
+  FULLY_FURNISHED
+  PARTIALLY_FURNISHED
+  NOT_FURNISHED
+}
+
+enum PropType {
+  APARTMENT_CONDOMINIUM
+  HOUSE
+  COMMERCIAL_PROPERTY
+  LAND
+  ROOM
 }
 
 enum Tenure {
